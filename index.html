@@ -4,26 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>记事本</title>
+	<style>
+		body {
+			background-color: #1e1e1e;
+			color: #ffffff;
+			font-family: Arial, sans-serif;
+		}
+
+		#addNoteForm {
+			text-align: right;
+			background-color: #2a2a2a;
+			padding: 1px; /* Reduced padding */
+			border-radius: 5px;
+			margin: 2px 5px; /* Reduced margin */
+		}
+
+		#addNoteForm h2 {
+            text-align: center;
+			color: #ffffff;
+			margin-top: 2px;
+			margin-bottom: 2px; /* Reduced margin */
+		}
+
+		#addNoteForm textarea {
+			width: calc(100% - 10px);
+			margin-bottom: 5px; /* Reduced margin */
+			background-color: #333333;
+			color: #ffffff;
+			border: 1px solid #555555;
+			padding: 1px;
+			border-radius: 1px;
+		}
+
+		#addNoteForm button {
+			width: auto;
+			background-color: #4CAF50;
+			color: #ffffff;
+			padding: 5px 16px;
+			border: none;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+
+		#addNoteForm button:hover {
+			background-color: #45a049;
+		}
+
+		#history {
+			width: calc(100% - 10px);
+			background-color: #333333;
+			color: #ffffff;
+			border: 1px solid #555555;
+			padding: 5px;
+			border-radius: 3px;
+			margin-top: 10px;
+		}
+
+		label {
+			color: #ffffff;
+		}
+
+		input {
+			background-color: #333333;
+			color: #ffffff;
+			border: 1px solid #555555;
+			padding: 5px;
+			border-radius: 3px;
+		}
+
+		button[type="button"] {
+			background-color: #f44336;
+			color: #ffffff;
+			padding: 8px 16px;
+			border: none;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+
+		button[type="button"]:hover {
+			background-color: #d32f2f;
+		}
+		#deleteControls {
+            display: flex;
+            align-items: center;
+			justify-content: flex-end;
+        }
+    </style>
 </head>
 <body>
-    
     <form id="addNoteForm">
         <h2>添加记录</h2>
 		<textarea name="content" id="content" rows="3" cols="50"></textarea>
-
         
         <button type="button" onclick="addNote()">添加</button>
     </form>
 
-    <h2>历史记录</h2>
-    <textarea id="history" rows="30" cols="50" readonly></textarea>
-
-    <div>
-        <label for="deleteIndex">删除记录序号：</label>
-        <input type="number" id="deleteIndex" min="1">
-        <button type="button" onclick="deleteNote()">删除</button>
-    </div>
-
+	<form id="addNoteForm">
+		<textarea id="history" rows="25" cols="50" readonly></textarea>
+	
+		<div id="deleteControls">
+			<label for="deleteIndex">删除序号：</label>
+			<input type="number" id="deleteIndex" min="1">
+			<button type="button" onclick="deleteNote()">删除</button>
+		</div>
+	</form>
     <script>
         // 使用JavaScript更新历史文本框的内容和滚动条位置
         function updateHistory() {
