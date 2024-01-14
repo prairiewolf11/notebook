@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记事本</title>
+</head>
+<body>
+    
+    <form id="addNoteForm">
+        <h2>添加记录</h2>
+		<textarea name="content" id="content" rows="3" cols="50"></textarea>
+
+        
+        <button type="button" onclick="addNote()">添加</button>
+    </form>
+
+    <h2>历史记录</h2>
+    <textarea id="history" rows="30" cols="50" readonly></textarea>
+
+    <div>
+        <label for="deleteIndex">删除记录序号：</label>
+        <input type="number" id="deleteIndex" min="1">
+        <button type="button" onclick="deleteNote()">删除</button>
+    </div>
+
+    <script>
+        // 使用JavaScript更新历史文本框的内容和滚动条位置
+        function updateHistory() {
+			// 生成随机参数或时间戳
+			var randomParam = new Date().getTime();
+
+			// 使用Ajax从服务器获取notebook.json文件内容，并添加随机参数
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var notes = JSON.parse(this.responseText);
+					var historyText = '';
+
+					notes.forEach(function(note, index) {
+						// 添加序号
+						historyText += (index + 1) + '. ' + note.日期 + ' - ' + note.内容 + ' - ' + note.备注 + ' - ' + note.类型 + "\n";
+					});
+
+					document.getElementById('history').value = historyText;
+					// 将滚动条滚动到最底部
+					document.getElementById('history').scrollTop = document.getElementById('history').scrollHeight;
+				}
+			};
+
+			// 在URL上添加随机参数
+			xhttp.open("GET", "./notebook.json?" + randomParam, true);
+			xhttp.send();
+		}
+
+        // 添加笔记
+        function addNote() {
+            var content = document.getElementById('content').value;
+            if (content.length >= 1) {
+                var timestamp = new Date().toLocaleString();
+                var note = { 日期: timestamp, 内容: content, 备注: '', 类型: '' };
+
+                // 使用Ajax将note对象写入notebook.json文件
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        // 添加成功后更新历史记录
+                        updateHistory();
+                        // 清空添加记录的文本框
+                        document.getElementById('content').value = '';
+                    }
+                };
+                xhttp.open("POST", "save_note.php", true);
+                xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhttp.send(JSON.stringify(note));
+            }
+        }
+
+        // 删除笔记
+        function deleteNote() {
+            var indexToDelete = document.getElementById('deleteIndex').value;
+            if (indexToDelete) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        // 删除成功后更新历史记录
+                        updateHistory();
+                        // 清空删除记录的文本框
+                        document.getElementById('deleteIndex').value = '';
+                        // 弹出提示
+                        alert("编号为 " + indexToDelete + " 的记录已删除");
+                    }
+                };
+                xhttp.open("POST", "delete_note.php", true);
+                xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhttp.send("indexToDelete=" + indexToDelete);
+            }
+        }
+
+        // 初始化页面时加载历史记录
+        updateHistory();
+    </script>
+</body>
+</html>
