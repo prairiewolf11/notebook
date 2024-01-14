@@ -1,2 +1,2 @@
 # notebook
-a simple,fast,easiest notebook for recording notes when you are busy.
+A simple, fast, and easy notebook for recording notes, especially when you are busy.
